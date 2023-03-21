@@ -1,19 +1,27 @@
 
 
-
 public class Cell {
     
+    // Field
     private Token token;
 
+    //Constructor
     public Cell(){
         token = null;
     }
 
-    public void setToken(Token t){ //setter for token
+    // setter for token
+    public void setToken(Token t){
 		token = t;
 	}
-	public Token getToken(){ //getter for token
+
+    // getter for token
+	public Token getToken(){
 		return token;
 	}
-    
+
+    // checks if cell is occupied by a token
+    public boolean isOccupied(){ 
+        return (token != null);
+    }
 }
