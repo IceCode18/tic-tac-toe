@@ -9,8 +9,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -29,6 +31,11 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener{
 	private final Color BACKGROUND_COLOR = new Color(15, 15, 17);
 	private final Color BACKGROUND_COLOR2 = new Color(255, 255, 255);
 
+	private final String BACKGROUND_MUSIC = "bgm.wav";
+	private final String WIN_MUSIC_X = "winX.wav";
+	private final String WIN_MUSIC_O = "winO.wav";
+	private final String MOVE_SOUND = "move.wav";
+
 	// Constructor
 	public Game(){
 		grid = new Grid();
@@ -36,6 +43,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener{
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		cells = grid.cellHost();
+		playBackgroundMusic();
 	}
 
 	@Override
@@ -109,6 +117,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener{
 							showErrorDialog();
 						} else {
 							host.setToken(new O(host));
+							playMoveSound();
 						}
 						same = 1;
 					} else {
@@ -117,6 +126,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener{
 							showErrorDialog();
 						} else {
 							host.setToken(new X(host));
+							playMoveSound();
 						}
 						same = -1;
 					}
@@ -132,11 +142,29 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener{
 
 		// calls the checkForWin method from grid class to check if a player has won
 		if (grid.checkForWin() != null) {
+			try { // tries to call the play sound method from Grid class
+				grid.stopBackgroundMusic();
+				if (grid.checkForWin().toString() == "X") {
+					grid.playSound(WIN_MUSIC_X);
+				} else {
+					grid.playSound(WIN_MUSIC_O);
+				}
+			} catch (UnsupportedAudioFileException er) {
+				// TODO Auto-generated catch block
+				er.printStackTrace();
+			} catch (IOException er) {
+				// TODO Auto-generated catch block
+				er.printStackTrace();
+			} catch (Exception er) {
+				// TODO Auto-generated catch block
+				er.printStackTrace();
+			}
 			int win = JOptionPane.showConfirmDialog(null, grid.checkForWin().toString() + " wins! Play again?",
 					"Match Results:", JOptionPane.YES_NO_OPTION);
 			if (win == JOptionPane.YES_OPTION) {
 				grid.clearTokens(); // clears the cells if the user chooses to play again
 				same = 0;
+				playBackgroundMusic();
 			} else {
 				System.exit(0); // exits if the user chooses not to play again
 			}
@@ -149,7 +177,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener{
 			} else {
 				System.exit(0); // exits if the user chooses not to play again
 			}
-		} 
+		}
 		repaint();
 	}
 
@@ -159,6 +187,30 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener{
 				"Invalid turn", JOptionPane.ERROR_MESSAGE);
 	}
 	
+	private void playBackgroundMusic() {
+		try {
+			grid.playLoopedSound(BACKGROUND_MUSIC);
+		} catch (UnsupportedAudioFileException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private void playMoveSound(){
+		try {
+			grid.playSound(MOVE_SOUND);
+		} catch (Exception er) {
+			// TODO Auto-generated catch block
+			er.printStackTrace();
+		}
+	}
+
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub

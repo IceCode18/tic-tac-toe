@@ -5,15 +5,22 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.geom.RoundRectangle2D;
+import java.io.File;
+import java.io.IOException;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class Grid {
 
-	
 	// Field
 	private Cell[] cells;
 	private BasicStroke stroke;
 	private int cellSize, gridSize, margin;
 	private Point corner;
+	private Clip backgroundClip;
 
 	private final Color PRIMARY_COLOR = new Color(42, 45, 49);
 	private final Color SECONDARY_COLOR = new Color(52, 55, 59);
@@ -31,19 +38,20 @@ public class Grid {
 	}
 
 	// Getter: to be passed to Game class
-	public Cell[] cellHost() { 
+	public Cell[] cellHost() {
 		return cells;
 	}
 
 	// Getter: to be passed to Game class
-	public int getCellSize() { 
+	public int getCellSize() {
 		cellSize = gridSize / 3;
 		return cellSize;
 	}
 
 	// Method to make grid responsive
 	public void resize(int w, int h) {
-		if (w < h) { // condition to decide whether to use width or height depending on window size to calculate gridSize 
+		if (w < h) { // condition to decide whether to use width or height depending on window size
+						// to calculate gridSize
 			gridSize = (int) (w * GRID_SIZE_MULTIPLIER);
 		} else {
 			gridSize = (int) (h * GRID_SIZE_MULTIPLIER);
@@ -77,7 +85,7 @@ public class Grid {
 		g.setColor(PRIMARY_COLOR);
 		g.fill(background);
 
-		// Draw the cells 
+		// Draw the cells
 		g.setPaint(PRIMARY_COLOR);
 		stroke = new BasicStroke(2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 		g.setStroke(stroke);
@@ -173,6 +181,27 @@ public class Grid {
 			t = cells[4].getToken();
 		}
 		return t;
+	}
+
+	public void playSound(String soundFile) throws Exception, UnsupportedAudioFileException, IOException { // sound player
+		File f = new File("./" + soundFile); // soundfile input with path prefix
+		AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
+		Clip clip = AudioSystem.getClip();
+		clip.open(audioIn);
+		clip.start(); // plays the sound
+	}
+
+	public void playLoopedSound(String soundFile) throws Exception, UnsupportedAudioFileException, IOException { // sound player
+		File f = new File("./" + soundFile); // soundfile input with path prefix
+		AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
+		Clip clip = AudioSystem.getClip();
+		backgroundClip = clip;
+		clip.open(audioIn);
+		clip.loop(Clip.LOOP_CONTINUOUSLY); // loops the sound
+	}
+
+	public void stopBackgroundMusic() {
+		backgroundClip.stop();
 	}
 
 }
