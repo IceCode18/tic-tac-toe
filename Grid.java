@@ -42,6 +42,8 @@ public class Grid {
 		g.drawLine(cellSize,cellSize*2, cellSize*4, cellSize*2);
 		g.drawLine(cellSize,cellSize*3, cellSize*4, cellSize*3);
 
+		stroke = new BasicStroke(5);
+		g.setStroke(stroke); 
 	}
 
 }
