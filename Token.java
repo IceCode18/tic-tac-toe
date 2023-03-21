@@ -2,9 +2,11 @@ import java.awt.Graphics2D;
 
 public abstract class Token {
     
+    // Field
     protected Cell cell;
 	
-	public Token(Cell r) { //constructor which includes setter
+    // Constructor
+	public Token(Cell r) {
         cell = r;
         cell.setToken(this);
     }

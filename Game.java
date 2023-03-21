@@ -1,6 +1,9 @@
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.MultipleGradientPaint;
+import java.awt.LinearGradientPaint;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -14,16 +17,21 @@ import javax.swing.JPanel;
 
 public class Game extends JPanel implements MouseListener, MouseMotionListener{
 	
+	// Field
     private Grid grid;
 	private ArrayList<Point> gesture;
 	private int down, dx, dy;
 	private Cell host;
 	private Cell[] cells;
 	private int same;
+	
+	private final double GESTURE_LENGTH_MULTIPLIER = 0.3;
+	private final Color BACKGROUND_COLOR = new Color(15, 15, 17);
+	private final Color BACKGROUND_COLOR2 = new Color(255, 255, 255);
 
-	//constructor
+	// Constructor
 	public Game(){
-		grid = new Grid(); //instantiates Grid class
+		grid = new Grid();
 		gesture = new ArrayList<Point>();
 		addMouseListener(this);
 		addMouseMotionListener(this);
@@ -31,33 +39,29 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener{
 	}
 
 	@Override
-	public void paintComponent(Graphics g1) {
-		Graphics2D g = (Graphics2D) g1;
+	public void paintComponent(Graphics gr) {
+		Graphics2D g = (Graphics2D) gr;
 		int w = getWidth(); // gets width and height for resize method to use
 		int h = getHeight();
 
-		g.setColor(Color.WHITE); //sets background color to white
-		g.fillRect(0,0,w,h);
-		g.setColor(Color.BLACK);
-		grid.resize(w, h); // calls resize method to update grid size
-		grid.draw(g); //calls grid's draw method to draw grid
+		// Drawing the grid
+		g.setPaint(new LinearGradientPaint(new Point(0, 0), new Point(0, w * h),
+				new float[] { 0.0f, 1.0f }, new Color[] { BACKGROUND_COLOR, BACKGROUND_COLOR2 },
+				MultipleGradientPaint.CycleMethod.NO_CYCLE));
 
-		for (int i =1; i<gesture.size(); i++){
-			int x1 = gesture.get(i-1).x;
-			int y1 = gesture.get(i-1).y;
+		g.fillRect(0, 0, w, h);
+		grid.resize(w, h); // calls resize method to update grid size
+		grid.draw(g); // calls draw method from grid
+
+		// Drawing the gesture
+		for (int i = 1; i < gesture.size(); i++) {
+			int x1 = gesture.get(i - 1).x;
+			int y1 = gesture.get(i - 1).y;
 			int x2 = gesture.get(i).x;
 			int y2 = gesture.get(i).y;
-			g.drawLine(x1,y1,x2,y2);
+			g.drawLine(x1, y1, x2, y2);
 		}
 
-	}
-
-	public static void main(String[] args) {
-		JFrame window = new JFrame();
-		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		window.setContentPane(new Game());
-		window.setSize(500,500);
-        window.setVisible(true);
 	}
 
 	@Override
@@ -99,7 +103,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener{
 			} else {
 				host = cells[up]; // passes current cell to variable host
 				if (!host.isOccupied()) {
-					if (distance < 0.3 * grid.getCellSize()) {
+					if (distance < GESTURE_LENGTH_MULTIPLIER * grid.getCellSize()) {
 						same++;
 						if (same == 2 || same == -2) {
 							showErrorDialog();
@@ -120,10 +124,12 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener{
 				grid.snapshot();
 			}
 		} else {
-			System.out.println("Try to draw over one cell at a time."); // error message if user draws over more than
-																		// one cells at a time
+			System.out.println("Try to draw over one cell at a time."); // error message if user draws over more than one cell at a time
 		}
+
 		gesture.clear();
+		repaint();
+
 		// calls the checkForWin method from grid class to check if a player has won
 		if (grid.checkForWin() != null) {
 			int win = JOptionPane.showConfirmDialog(null, grid.checkForWin().toString() + " wins! Play again?",
@@ -134,7 +140,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener{
 			} else {
 				System.exit(0); // exits if the user chooses not to play again
 			}
-		} else if (grid.isFull()) { // calls isFull method from Grid class
+		} else if (grid.isFull()) { // checks if the board is full
 			int match = JOptionPane.showConfirmDialog(null, "The board is full. The match is a Tie. Play again?",
 					"Match Results:", JOptionPane.YES_NO_OPTION);
 			if (match == JOptionPane.YES_OPTION) {
@@ -147,7 +153,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener{
 		repaint();
 	}
 
-	// method to show error dialog if a player tries to take a turn twice
+	// Method to show an error dialog once a player tries to take a turn twice
 	private void showErrorDialog() {
 		JOptionPane.showMessageDialog(null, "Player should not take a turn twice!",
 				"Invalid turn", JOptionPane.ERROR_MESSAGE);
@@ -163,4 +169,14 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener{
 		// TODO Auto-generated method stub
 	}
 	
+	public static void main(String[] args) {
+		JFrame window = new JFrame();
+		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		window.setTitle("Tic-Tac-Toe");
+		window.setMinimumSize(new Dimension(500, 500));
+		window.setSize(800, 800);
+		window.setContentPane(new Game());
+		window.setVisible(true);
+	}
+
 }

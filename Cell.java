@@ -7,10 +7,10 @@ public class Cell {
     private Token token;
     private Rectangle bounds;
 
-    //Constructor
+    // Constructor
     public Cell(){
         token = null;
-        bounds = new Rectangle(); //instantiates Rectangle class
+        bounds = new Rectangle();
     }
 
     // Setter for token
@@ -23,9 +23,9 @@ public class Cell {
 		return token;
 	}
 
-    // Setter to setBounds of the cells
+    // Setter to set bounds of the cells
     public void setBounds(int x, int y, int w, int h){
-		bounds.setBounds(x,y,w,h); 
+		bounds.setBounds(x, y, w, h); 
     }
 
     // Getter whose value is to be used by Token subclasses
@@ -35,12 +35,7 @@ public class Cell {
 
     // Finds out if the cell contains a coordinate
     public boolean contains(int x, int y){
-		if(bounds.contains(x,y)){
-			return true;
-		}
-		else{
-			return false;
-		}
+		return bounds.contains(x,y);
 	}
 
     // Checks if cell is occupied by a token
@@ -50,7 +45,7 @@ public class Cell {
 
     // Draws token
     public void draw(Graphics2D g){ 
-		if(token!=null){ //to avoid null pointer exceptions
+		if(token!=null){
 			token.draw(g); 
 		}
 	}
@@ -61,9 +56,7 @@ public class Cell {
 		if(token==null){
 			return " ";
 		}
-		else{
-			return token.toString();
-		}
+		return token.toString();
 	}
 
     // Overriding the equals() method
