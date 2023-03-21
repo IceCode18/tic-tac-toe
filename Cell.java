@@ -24,4 +24,17 @@ public class Cell {
     public boolean isOccupied(){ 
         return (token != null);
     }
+
+    // Overriding the equals() method
+    @Override
+    public boolean equals(Object o){
+        if(o instanceof Cell){
+            Cell other = (Cell) o;
+            if(this.token != null && other.token!=null){
+                return this.token.toString().equals(other.token.toString());
+            }
+        }
+        return false;
+    }
+    
 }
