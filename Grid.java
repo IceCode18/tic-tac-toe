@@ -88,4 +88,47 @@ public class Grid {
 		System.out.println(cells[6].toString() + cells[7].toString() + cells[8].toString());
 	}
 
+	public void clearTokens() {
+		for (int i = 0; i < 9; i++) {
+			cells[i].setToken(null);
+		}
+	}
+
+	public boolean isFull() { // checks if the grid is full
+		int c = 0;
+		for (int i = 0; i < 9; i++) {
+			if (cells[i].isOccupied()) { // checker
+				c++;
+			}
+		}
+		if (c == 9) { // returns true if all grids are occupied
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public Token checkForWin() { // checks if the three designated cells have the same value
+		Token t = null;
+		for (int i = 0; i < 3; i++) {
+			if (cells[i].equals(cells[i + 3]) && cells[i].equals(cells[i + 6])) { // checker
+				t = cells[i].getToken();
+			}
+
+		}
+		for (int i = 0; i < 8; i += 3) {
+			if (cells[i].equals(cells[i + 1]) && cells[i].equals(cells[i + 2])) { // checker
+				t = cells[i].getToken();
+			}
+
+		}
+		if (cells[0].equals(cells[4]) && cells[4].equals(cells[8])) { // checker
+			t = cells[4].getToken();
+		}
+		if (cells[2].equals(cells[4]) && cells[4].equals(cells[6])) { // checker
+			t = cells[4].getToken();
+		}
+		return t;
+	}
+
 }

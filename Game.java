@@ -124,6 +124,26 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener{
 																		// one cells at a time
 		}
 		gesture.clear();
+		// calls the checkForWin method from grid class to check if a player has won
+		if (grid.checkForWin() != null) {
+			int win = JOptionPane.showConfirmDialog(null, grid.checkForWin().toString() + " wins! Play again?",
+					"Match Results:", JOptionPane.YES_NO_OPTION);
+			if (win == JOptionPane.YES_OPTION) {
+				grid.clearTokens(); // clears the cells if the user chooses to play again
+				same = 0;
+			} else {
+				System.exit(0); // exits if the user chooses not to play again
+			}
+		} else if (grid.isFull()) { // calls isFull method from Grid class
+			int match = JOptionPane.showConfirmDialog(null, "The board is full. The match is a Tie. Play again?",
+					"Match Results:", JOptionPane.YES_NO_OPTION);
+			if (match == JOptionPane.YES_OPTION) {
+				grid.clearTokens(); // clears the cells if the user chooses to play again
+				same = 0;
+			} else {
+				System.exit(0); // exits if the user chooses not to play again
+			}
+		} 
 		repaint();
 	}
 
