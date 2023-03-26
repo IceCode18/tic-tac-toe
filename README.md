@@ -1,4 +1,4 @@
-# Tic-Tac-Toe
+# Tic-Tac-Toe Java Desktop Game
 
 A simple game built using Java, which includes a sleek user interface and sound effects. The game was created as a little project to practice Object-Oriented Programming principles, manipulating graphics, reading file inputs, adding audio effects, and recognizing mouse gestures.
  
